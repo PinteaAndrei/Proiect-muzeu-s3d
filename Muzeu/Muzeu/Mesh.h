@@ -1,34 +1,50 @@
 #pragma once
+
+#include <vector>
+#include <glew.h>
 #include <GLM.hpp>
 #include <gtc/matrix_transform.hpp>
+#include <glfw3.h>// Include glad to get the required OpenGL headers
+#include <string>
 
 #include "Shader.h"
-#include "Texture.h"
-#include "Vertex.h"
 
-#include <string>
-#include <vector>
+struct Vertex
+{
+    // Position
+    glm::vec3 Position;
+    // Normal
+    glm::vec3 Normal;
+    // TexCoords
+    glm::vec2 TexCoords;
+    // Tangent
+    glm::vec3 Tangent;
+    // Bitangent
+    glm::vec3 Bitangent;
+};
 
-using namespace std;
+struct Texture
+{
+    unsigned int id;
+    std::string type;
+    std::string path;
+};
 
 class Mesh
 {
 public:
-    // mesh Data
-    unsigned int numVertices;
-    std::shared_ptr <Vertex> vertices;
+    // Mesh Data
+    std::vector<Vertex> vertices;
+    std::vector<unsigned int> indices;
+    std::vector<Texture> textures;
 
-    unsigned int numIndexes;
-    std::shared_ptr <unsigned int> indices;
-    vector<Texture>      textures;
-    unsigned int VAO;
+    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
+    void Draw(Shader& shader); // Render the mesh
 
-    Mesh(const vector<Vertex>& vertices, const vector<unsigned int>& indices, const vector<Texture>& textures);
-    Mesh(unsigned int numVertices, std::shared_ptr <Vertex> vertices, unsigned int numIndexes, std::shared_ptr <unsigned int> indices, const vector<Texture>& textures);
-    void Draw(Shader& shader);
 private:
-    // render data 
-    unsigned int VBO, EBO;
+    // Render data
+    unsigned int VAO, VBO, EBO;
+
+    // Initializes all the buffer objects/arrays
     void setupMesh();
 };
-

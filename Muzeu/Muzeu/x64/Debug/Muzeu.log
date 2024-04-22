@@ -1,1 +1,3 @@
-﻿  Muzeu.vcxproj -> C:\Users\Andrei\source\repos\Proiect-muzeu-s3d\Muzeu\x64\Debug\Muzeu.exe
+﻿  Muzeu.cpp
+C:\Users\Andrei\source\repos\Proiect-muzeu-s3d\Muzeu\Muzeu\Muzeu.cpp(204,32): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+  Muzeu.vcxproj -> C:\Users\Andrei\source\repos\Proiect-muzeu-s3d\Muzeu\x64\Debug\Muzeu.exe
