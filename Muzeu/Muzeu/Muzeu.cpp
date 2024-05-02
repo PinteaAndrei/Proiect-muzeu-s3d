@@ -119,8 +119,8 @@ unsigned int skyboxIndices[] =
 
 
 
-Model dilophosaurusModel;
-StaticObject dilophosaurusObject;
+Model dilophosaurusModel, parasourModel;
+StaticObject dilophosaurusObject, parasourObject;
 
 std::vector<std::string> facesDay
 {
@@ -318,6 +318,9 @@ int main(int argc, char** argv)
 
     currentObject = &dilophosaurusObject;
 
+    parasourModel = Model("..\\Models\\Albatross\\albatros.obj");
+    parasourObject = StaticObject(parasourModel, SCR_WIDTH, SCR_HEIGHT, glm::vec3(2.0f, 0.0f, 2.0f));
+
 
     while (!glfwWindowShouldClose(window))
     {
@@ -374,8 +377,8 @@ int main(int argc, char** argv)
         glCullFace(GL_FRONT);
         renderScene(shadowMappingDepthShader);
 
-
         renderModel(shadowMappingDepthShader, dilophosaurusObject.GetModel(), dilophosaurusObject.GetPosition(), dilophosaurusObject.GetRotation(), glm::vec3(2.0f));
+        renderModel(shadowMappingDepthShader, parasourObject.GetModel(), parasourObject.GetPosition(), parasourObject.GetRotation(), glm::vec3(1.0f));
 
         glCullFace(GL_BACK);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -404,6 +407,8 @@ int main(int argc, char** argv)
         renderScene(shadowMappingShader);
 
         renderModel(ModelShader, dilophosaurusObject.GetModel(), dilophosaurusObject.GetPosition(), dilophosaurusObject.GetRotation(), glm::vec3(2.0f));
+        renderModel(ModelShader, parasourObject.GetModel(), parasourObject.GetPosition(), parasourObject.GetRotation(), glm::vec3(1.0f));
+
 
         glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f); // White light
         glm::vec3 lightDir = glm::normalize(glm::vec3(-0.2f, -1.0f, -0.3f)); // Example direction
