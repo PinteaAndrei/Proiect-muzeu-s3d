@@ -20,7 +20,7 @@ public:
     StaticObject() = default;
     StaticObject(Model model, const int width, const int height, const glm::vec3& position);
 
-    StaticObject& operator=(const StaticObject& othervehicle);
+    StaticObject& operator=(const StaticObject& otherobject);
 
     void Set(const int width, const int height, const glm::vec3& position);
 
