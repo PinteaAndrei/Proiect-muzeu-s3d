@@ -350,6 +350,10 @@ unsigned int grassTexture = CreateTexture("..\\Textures\\grass3.png");
 
     currentObject = &dilophosaurusObject;
 
+    parcelModel = Model("..\\Models\\Parcel\\pavajusatului.obj");
+    parcelObject = StaticObject(parcelModel, SCR_WIDTH, SCR_HEIGHT, glm::vec3(0.0f, -11.62f, 0.0f));
+    parcelObject.SetRotation(46.0f);
+
     /*cormorantModel = Model("..\\Models\\Cormorant\\NHMW-Zoo1-Vogel_Galapagos Cormorant_low res.obj");
     cormorantObject = StaticObject(cormorantModel, SCR_WIDTH, SCR_HEIGHT, glm::vec3(5.0f, 2.5f, 2.0f));
     cormorantObject.SetRotation(90.0f);
