@@ -1,0 +1,33 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# çÏê¨ÇµÇΩÉtÉ@ÉCÉã : 25.01.2021 14:40:54
+
+newmtl trunk1
+	Ns 18.000000
+	Ni 1.520000
+	d 1.000000
+	Tr 0.000000
+	Tf 1.000000 1.000000 1.000000 
+	illum 2
+	Ka 0.588000 0.588000 0.588000
+	Kd 0.500000 0.500000 0.500000
+	Ks 0.026471 0.026471 0.026471
+	Ke 0.000000 0.000000 0.000000
+	map_Ka Quercus_glauca_bark_diff_.jpg
+	map_Kd Quercus_glauca_bark_diff_.jpg
+	map_bump Quercus_glauca_bark_nor.jpg
+	bump Quercus_glauca_bark_nor.jpg
+
+newmtl Material__26
+	Ns 71.000000
+	Ni 1.600000
+	d 1.000000
+	Tr 0.000000
+	Tf 1.000000 1.000000 1.000000 
+	illum 2
+	Ka 0.588000 0.588000 0.588000
+	Kd 0.500000 0.500000 0.500000
+	Ks 0.000000 0.000000 0.000000
+	Ke 0.000000 0.000000 0.000000
+	map_Ka Quercus glauca_c04a_diff.png
+	map_Kd Quercus glauca_c04a_diff.png
+	map_d Quercus glauca_c04a_diff.png
