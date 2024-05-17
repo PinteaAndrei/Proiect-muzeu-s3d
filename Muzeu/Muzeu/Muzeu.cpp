@@ -1,4 +1,4 @@
-#include <stdlib.h>
+﻿#include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
 #include <cstdlib> 
@@ -96,6 +96,7 @@ void renderGrass(const Shader& shaderBlending);
 void renderModel(Shader& ourShader, Model& ourModel, const glm::vec3& position, float rotationAngle, const glm::vec3& scale);
 void renderModelRotationX(Shader& ourShader, Model& ourModel, const glm::vec3& position, float rotationAngle, const glm::vec3& scale);
 void renderModelRotationParcel(Shader& ourShader, Model& ourModel, const glm::vec3& position, float rotationAngle, const glm::vec3& scale);
+void renderPlusRoad(Shader& ourShader, Model& ourModel, const glm::vec3& position, float rotationAngle, const glm::vec3& scale);
 
 double deltaTime = 0.0f; 
 double lastFrame = 0.0f;
@@ -350,9 +351,9 @@ unsigned int grassTexture = CreateTexture("..\\Textures\\grass3.png");
 
     currentObject = &dilophosaurusObject;
 
-    parcelModel = Model("..\\Models\\Parcel\\pavajusatului.obj");
-    parcelObject = StaticObject(parcelModel, SCR_WIDTH, SCR_HEIGHT, glm::vec3(0.0f, -11.62f, 0.0f));
-    parcelObject.SetRotation(46.0f);
+    parcelModel = Model("..\\Models\\Parcel\\cobblestone.obj");
+    parcelObject = StaticObject(parcelModel, SCR_WIDTH, SCR_HEIGHT, glm::vec3(0.0f, -0.4f, 0.0f));
+    parcelObject.SetRotation(0.0f);
 
     /*cormorantModel = Model("..\\Models\\Cormorant\\NHMW-Zoo1-Vogel_Galapagos Cormorant_low res.obj");
     cormorantObject = StaticObject(cormorantModel, SCR_WIDTH, SCR_HEIGHT, glm::vec3(5.0f, 2.5f, 2.0f));
@@ -500,6 +501,9 @@ unsigned int grassTexture = CreateTexture("..\\Textures\\grass3.png");
         renderModelRotationParcel(ModelShader, parcelObject.GetModel(), parcelObject.GetPosition(), parcelObject.GetRotation(), glm::vec3(1.0f));
 
 
+        renderPlusRoad(ModelShader, parcelObject.GetModel(), parcelObject.GetPosition(), parcelObject.GetRotation(), glm::vec3(1.0f));
+
+
         glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f); // White light
         glm::vec3 lightDir = glm::normalize(glm::vec3(-0.2f, -1.0f, -0.3f)); // Example direction
         glm::vec3 objectColor = glm::vec3(1.0f, 0.5f, 0.31f); // Example color (rust)
@@ -556,6 +560,72 @@ void renderScene(const Shader& shader)
     renderFloor();
 
 }
+
+
+void renderPlusRoad(Shader& ourShader, Model& ourModel, const glm::vec3& position, float rotationAngle, const glm::vec3& scale) {
+    ourShader.Use();
+    glm::mat4 viewMatrix = pCamera->GetViewMatrix(currentObject);
+    glm::mat4 projectionMatrix = pCamera->GetProjectionMatrix();
+
+    // Render the central tile
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, position);
+    model = glm::rotate(model, glm::radians(rotationAngle), glm::vec3(-1.0f, 0.0f, 0.0f));
+    model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, -1.0f, 0.0f));
+    model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+    model = glm::scale(model, scale);
+    ourShader.SetMat4("model", model);
+    ourShader.SetMat4("view", viewMatrix);
+    ourShader.SetMat4("projection", projectionMatrix);
+    ourModel.Draw(ourShader);
+
+    // Render tiles in the four directions
+    int numTiles = 8; // Number of tiles in each direction from the center
+    float tileSpacing = 5.65f; // Distance between each tile
+
+    for (int i = 1; i <= numTiles; ++i) {
+        // Right direction
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, position + glm::vec3(i * tileSpacing, 0.0f, 0.0f));
+        model = glm::rotate(model, glm::radians(rotationAngle), glm::vec3(-1.0f, 0.0f, 0.0f));
+        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, -1.0f, 0.0f));
+        model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+        model = glm::scale(model, scale);
+        ourShader.SetMat4("model", model);
+        ourModel.Draw(ourShader);
+
+        // Left direction
+        model = glm::mat4(50.0f);
+        model = glm::translate(model, position + glm::vec3(-i * tileSpacing, 0.0f, 0.0f));
+        model = glm::rotate(model, glm::radians(rotationAngle), glm::vec3(-1.0f, 0.0f, 0.0f));
+        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, -1.0f, 0.0f));
+        model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+        model = glm::scale(model, scale);
+        ourShader.SetMat4("model", model);
+        ourModel.Draw(ourShader);
+
+        // Up direction
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, position + glm::vec3(0.0f, 0.0f, i * tileSpacing));
+        model = glm::rotate(model, glm::radians(rotationAngle), glm::vec3(-1.0f, 0.0f, 0.0f));
+        model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, -1.0f, 0.0f));
+        model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+        model = glm::scale(model, scale);
+        ourShader.SetMat4("model", model);
+        ourModel.Draw(ourShader);
+
+        // Down direction
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, position + glm::vec3(0.0f, 0.0f, -i * tileSpacing));
+        model = glm::rotate(model, glm::radians(rotationAngle), glm::vec3(-1.0f, 0.0f, 0.0f));
+        model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, -1.0f, 0.0f));
+        model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+        model = glm::scale(model, scale);
+        ourShader.SetMat4("model", model);
+        ourModel.Draw(ourShader);
+    }
+}
+
 
 
 unsigned int planeVAO = 0;
@@ -750,8 +820,8 @@ void renderModelRotationParcel(Shader& ourShader, Model& ourModel, const glm::ve
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, position);
     model = glm::rotate(model, glm::radians(rotationAngle), glm::vec3(-1.0f, 0.0f, 0.0f));
-    model = glm::rotate(model, glm::radians(8.0f), glm::vec3(0.0f, -1.0f, 0.0f));
-    model = glm::rotate(model, glm::radians(1.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+    model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, -1.0f, 0.0f));
+    model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, -1.0f));
     
     model = glm::scale(model, scale);
 
