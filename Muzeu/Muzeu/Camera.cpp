@@ -83,7 +83,7 @@ const glm::mat4 Camera::GetProjectionMatrix() const
 
 void Camera::ProcessKeyboard(ECameraMovementType direction, float deltaTime)
 {
-    float velocity = (float)(cameraSpeedFactor * deltaTime);
+    float velocity = (float)(cameraSpeedFactor * deltaTime)*3;
     switch (direction)
     {
     case ECameraMovementType::FORWARD:

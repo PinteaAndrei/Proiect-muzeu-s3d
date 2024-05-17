@@ -95,7 +95,7 @@ void renderFloor();
 void renderGrass(const Shader& shaderBlending);
 void renderModel(Shader& ourShader, Model& ourModel, const glm::vec3& position, float rotationAngle, const glm::vec3& scale);
 void renderModelRotationX(Shader& ourShader, Model& ourModel, const glm::vec3& position, float rotationAngle, const glm::vec3& scale);
-void renderModelRotationParcel(Shader& ourShader, Model& ourModel, const glm::vec3& position, float rotationAngle, const glm::vec3& scale);
+void renderModelRotationXZ(Shader& ourShader, Model& ourModel, const glm::vec3& position, float rotationAngle, const glm::vec3& scale);
 void renderPlusRoad(Shader& ourShader, Model& ourModel, const glm::vec3& position, float rotationAngle, const glm::vec3& scale);
 
 double deltaTime = 0.0f; 
@@ -135,8 +135,8 @@ unsigned int skyboxIndices[] =
 
 
 
-Model dilophosaurusModel, parasourModel,crowModel,batalionModel,cormorantModel ,corythosaurModel,dodoModel,parrotModel,styracosaurusModel,trexModel,parcelModel;
-StaticObject dilophosaurusObject, parasourObject,crowObject,batalionObject,cormorantObject,corythosaurObject,dodoObject,parrotObject,styracosaurusObject,trexObject,parcelObject;
+Model dilophosaurusModel, parasourModel,crowModel,batalionModel,cormorantModel ,corythosaurModel,dodoModel,parrotModel,styracosaurusModel,trexModel,parcelModel, treeModel;
+StaticObject dilophosaurusObject, parasourObject,crowObject,batalionObject,cormorantObject,corythosaurObject,dodoObject,parrotObject,styracosaurusObject,trexObject,parcelObject, treeObject;
 
 std::vector<std::string> facesDay
 {
@@ -160,21 +160,22 @@ std::vector<std::string>facesNight
 };
 
 
-
-
-
-
 float blendFactor = 0;
 float ambientFactor = 0.9;
+
+
+std::vector<glm::vec3> treePositions = {
+    glm::vec3(-34.0f, -0.55f, -27.0f),
+    glm::vec3(37.0f, -0.55f, 29.0f),
+    glm::vec3(15.0f, -0.55f, -31.0f),
+    glm::vec3(-10.0f, -0.55f, 19.0f),
+};
 
 int main(int argc, char** argv)
 {
 
     GeneratePositions();
-
-
     
-
     std::string strFullExeFileName = argv[0];
     std::string strExePath;
     const size_t last_slash_idx = strFullExeFileName.rfind('\\');
@@ -344,10 +345,11 @@ unsigned int grassTexture = CreateTexture("..\\Textures\\grass3.png");
         }
     }
 
-    
+    treeModel = Model("..\\Models\\Tree\\Quercus glauca_FREEMODEL_std_obj.obj");
+    treeObject = StaticObject(treeModel, SCR_WIDTH, SCR_HEIGHT, glm::vec3(-10.0f, -0.55f, -10.0f));
 
     dilophosaurusModel = Model("..\\Models\\dilophosaurus\\dilophosaurus.obj");
-    dilophosaurusObject = StaticObject(dilophosaurusModel, SCR_WIDTH, SCR_HEIGHT, glm::vec3(0.0f, 1.7f, 0.0f));
+    dilophosaurusObject = StaticObject(dilophosaurusModel, SCR_WIDTH, SCR_HEIGHT, glm::vec3(-10.0f, 1.7f, -15.0f));
 
     currentObject = &dilophosaurusObject;
 
@@ -370,21 +372,21 @@ unsigned int grassTexture = CreateTexture("..\\Textures\\grass3.png");
     parrotObject = StaticObject(parrotModel, SCR_WIDTH, SCR_HEIGHT, glm::vec3(20.0f, 1.0f, 2.0f));
 
     dodoModel = Model("..\\Models\\dodo\\dodo.obj");
-    dodoObject = StaticObject(dodoModel, SCR_WIDTH, SCR_HEIGHT, glm::vec3(25.0f, 0.15f, 2.0f));
+    dodoObject = StaticObject(dodoModel, SCR_WIDTH, SCR_HEIGHT, glm::vec3(25.0f, 0.15f, 2.0f));*/
 
     corythosaurModel = Model("..\\Models\\Corythosaurus-OBJ\\corythosaurus.obj");
-    corythosaurObject = StaticObject(corythosaurModel, SCR_WIDTH, SCR_HEIGHT, glm::vec3(30.0f, -4.0f, 2.0f));
+    corythosaurObject = StaticObject(corythosaurModel, SCR_WIDTH, SCR_HEIGHT, glm::vec3(-32.0f, -4.0f, -10.0f));
     corythosaurObject.SetRotation(90.0f);
 
     parasourModel = Model("..\\Models\\parasaurolophus-toy-OBJ\\parasaurolophus-toy.obj");
-    parasourObject = StaticObject(parasourModel, SCR_WIDTH, SCR_HEIGHT, glm::vec3(35.0f, -1.0f, 2.0f));
+    parasourObject = StaticObject(parasourModel, SCR_WIDTH, SCR_HEIGHT, glm::vec3(-15.0f, -0.8f, 10.0f));
     parasourObject.SetRotation(90.0f);
 
     styracosaurusModel = Model("..\\Models\\styracosaurus\\styracosaurus.obj");
-    styracosaurusObject = StaticObject(styracosaurusModel, SCR_WIDTH, SCR_HEIGHT, glm::vec3(40.0f, -5.0f, 2.0f));
+    styracosaurusObject = StaticObject(styracosaurusModel, SCR_WIDTH, SCR_HEIGHT, glm::vec3(-20.0f, -5.0f, 35.0f));
     styracosaurusObject.SetRotation(90.0f);
 
-    trexModel = Model("..\\Models\\trex\\t-rex.obj");
+   /* trexModel = Model("..\\Models\\trex\\t-rex.obj");
     trexObject = StaticObject(trexModel, SCR_WIDTH, SCR_HEIGHT, glm::vec3(50.0f, -0.6f, 2.0f));*/
 
 
@@ -444,16 +446,19 @@ unsigned int grassTexture = CreateTexture("..\\Textures\\grass3.png");
         renderScene(shadowMappingDepthShader);
 
         renderModel(shadowMappingDepthShader, dilophosaurusObject.GetModel(), dilophosaurusObject.GetPosition(), dilophosaurusObject.GetRotation(), glm::vec3(2.0f));
-       /* renderModelRotationX(shadowMappingDepthShader, parasourObject.GetModel(), parasourObject.GetPosition(), parasourObject.GetRotation(), glm::vec3(0.075f));
-        renderModelRotationX(shadowMappingDepthShader, crowObject.GetModel(), crowObject.GetPosition(), crowObject.GetRotation(), glm::vec3(1.0f));
+        renderModelRotationX(shadowMappingDepthShader, parasourObject.GetModel(), parasourObject.GetPosition(), parasourObject.GetRotation(), glm::vec3(0.1f));
+        renderModelRotationX(shadowMappingDepthShader, corythosaurObject.GetModel(), corythosaurObject.GetPosition(), corythosaurObject.GetRotation(), glm::vec3(0.75f));
+        renderModelRotationXZ(shadowMappingDepthShader, styracosaurusObject.GetModel(), styracosaurusObject.GetPosition(), styracosaurusObject.GetRotation(), glm::vec3(0.75f));
+       /* renderModelRotationX(shadowMappingDepthShader, crowObject.GetModel(), crowObject.GetPosition(), crowObject.GetRotation(), glm::vec3(1.0f));
         renderModel(shadowMappingDepthShader, batalionObject.GetModel(), batalionObject.GetPosition(), batalionObject.GetRotation(), glm::vec3(1.0f));
         renderModelRotationX(shadowMappingDepthShader, cormorantObject.GetModel(), cormorantObject.GetPosition(), cormorantObject.GetRotation(), glm::vec3(0.005f));
-        renderModelRotationX(shadowMappingDepthShader, corythosaurObject.GetModel(), corythosaurObject.GetPosition(), corythosaurObject.GetRotation(), glm::vec3(0.75f));
         renderModel(shadowMappingDepthShader, dodoObject.GetModel(), dodoObject.GetPosition(), dodoObject.GetRotation(), glm::vec3(0.002f));
         renderModel(shadowMappingDepthShader, parrotObject.GetModel(), parrotObject.GetPosition(), parrotObject.GetRotation(), glm::vec3(0.05f));
-        renderModelRotationX(shadowMappingDepthShader, styracosaurusObject.GetModel(), styracosaurusObject.GetPosition(), styracosaurusObject.GetRotation(), glm::vec3(0.75f));
         renderModel(shadowMappingDepthShader, trexObject.GetModel(), trexObject.GetPosition(), trexObject.GetRotation(), glm::vec3(1.25f));*/
-
+       
+        for(auto positon : treePositions)
+            renderModel(shadowMappingDepthShader, treeObject.GetModel(), positon, treeObject.GetRotation(), glm::vec3(0.001f));
+        
         glCullFace(GL_BACK);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -489,18 +494,20 @@ unsigned int grassTexture = CreateTexture("..\\Textures\\grass3.png");
 
 
         renderModel(ModelShader, dilophosaurusObject.GetModel(), dilophosaurusObject.GetPosition(), dilophosaurusObject.GetRotation(), glm::vec3(2.0f));
-       /* renderModelRotationX(ModelShader, parasourObject.GetModel(), parasourObject.GetPosition(), parasourObject.GetRotation(), glm::vec3(0.075f));
-        renderModelRotationX(ModelShader, crowObject.GetModel(), crowObject.GetPosition(), crowObject.GetRotation(), glm::vec3(1.0f));
+        renderModelRotationX(ModelShader, parasourObject.GetModel(), parasourObject.GetPosition(), parasourObject.GetRotation(), glm::vec3(0.1f));
+        renderModelRotationX(ModelShader, corythosaurObject.GetModel(), corythosaurObject.GetPosition(), corythosaurObject.GetRotation(), glm::vec3(0.75f));
+        renderModelRotationXZ(ModelShader, styracosaurusObject.GetModel(), styracosaurusObject.GetPosition(), styracosaurusObject.GetRotation(), glm::vec3(0.75f));
+        /*renderModelRotationX(ModelShader, crowObject.GetModel(), crowObject.GetPosition(), crowObject.GetRotation(), glm::vec3(1.0f));
         renderModel(ModelShader, batalionObject.GetModel(), batalionObject.GetPosition(), batalionObject.GetRotation(), glm::vec3(1.0f));
         renderModelRotationX(ModelShader, cormorantObject.GetModel(), cormorantObject.GetPosition(), cormorantObject.GetRotation(), glm::vec3(0.005f));
-        renderModelRotationX(ModelShader, corythosaurObject.GetModel(), corythosaurObject.GetPosition(), corythosaurObject.GetRotation(), glm::vec3(0.75f));
         renderModel(ModelShader, dodoObject.GetModel(), dodoObject.GetPosition(), dodoObject.GetRotation(), glm::vec3(0.002f));
         renderModel(ModelShader, parrotObject.GetModel(), parrotObject.GetPosition(), parrotObject.GetRotation(), glm::vec3(0.05f));
-        renderModelRotationX(ModelShader, styracosaurusObject.GetModel(), styracosaurusObject.GetPosition(), styracosaurusObject.GetRotation(), glm::vec3(0.75f));
-        renderModel(ModelShader, trexObject.GetModel(), trexObject.GetPosition(), trexObject.GetRotation(), glm::vec3(1.25f));*/
-        renderModelRotationParcel(ModelShader, parcelObject.GetModel(), parcelObject.GetPosition(), parcelObject.GetRotation(), glm::vec3(1.0f));
+        renderModel(ModelShader, trexObject.GetModel(), trexObject.GetPosition(), trexObject.GetRotation(), glm::vec3(1.25f));
+        renderModelRotationParcel(ModelShader, parcelObject.GetModel(), parcelObject.GetPosition(), parcelObject.GetRotation(), glm::vec3(1.0f));*/
 
-
+        for (auto positon : treePositions)
+            renderModel(ModelShader, treeObject.GetModel(), positon, treeObject.GetRotation(), glm::vec3(0.001f));
+        
         renderPlusRoad(ModelShader, parcelObject.GetModel(), parcelObject.GetPosition(), parcelObject.GetRotation(), glm::vec3(1.0f));
 
 
@@ -779,12 +786,13 @@ void GeneratePositions()
 
     srand(time(nullptr));
 
-    for (int i = 0; i < 100; ++i) {
-        float xPos = rand() % 101 - 50;
-        float zPos = rand() % 101 - 50;
-        grassPositions.push_back(std::make_pair(xPos, zPos));
+    while (grassPositions.size() < 100)
+    {
+        float xPos = rand() % 97 - 48;
+        float zPos = rand() % 97 - 48;
+        if ((xPos < -5 || xPos>5) && (zPos < -5 || zPos >5))
+            grassPositions.push_back(std::make_pair(xPos, zPos));
     }
-
 }
 
 
@@ -813,14 +821,14 @@ void renderModelRotationX(Shader& ourShader, Model& ourModel, const glm::vec3& p
 
 
 
-void renderModelRotationParcel(Shader& ourShader, Model& ourModel, const glm::vec3& position, float rotationAngle, const glm::vec3& scale)
+void renderModelRotationXZ(Shader& ourShader, Model& ourModel, const glm::vec3& position, float rotationAngle, const glm::vec3& scale)
 {
     ourShader.Use();
 
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, position);
     model = glm::rotate(model, glm::radians(rotationAngle), glm::vec3(-1.0f, 0.0f, 0.0f));
-    model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, -1.0f, 0.0f));
+    model = glm::rotate(model, glm::radians(5.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, -1.0f));
     
     model = glm::scale(model, scale);
