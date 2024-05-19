@@ -61,10 +61,15 @@ public:
 
     bool GetFreeCamera();
 
+    void SetCameraOnGround(bool onGround);
+    bool IsCameraOnGround() const;
+
 private:
     void ProcessMouseMovement(float xOffset, float yOffset, bool constrainPitch = true);
 
     void UpdateCameraVectors();
+
+    bool cameraOnGround;
 
 protected:
     const float cameraSpeedFactor = 2.5f;

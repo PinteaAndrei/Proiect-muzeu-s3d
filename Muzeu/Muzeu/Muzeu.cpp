@@ -42,6 +42,9 @@ StaticObject* currentObject;
 
 std::vector<std::pair<float, float>> grassPositions;
 
+bool cameraOnGround = false;
+
+
 unsigned int CreateTexture(const std::string& strTexturePath)
 {
     unsigned int textureId = -1;
@@ -879,10 +882,6 @@ void renderModelRotationXYZ(Shader& ourShader, Model& ourModel, const glm::vec3&
     ourModel.Draw(ourShader);
 }
 
-
-
-
-
 void processInput(GLFWwindow* window)
 {
     if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS)
@@ -891,12 +890,26 @@ void processInput(GLFWwindow* window)
         ambientFactor = std::max(ambientFactor - 0.01, 0.34);
         lightPos[0] += 1.1f;
     }
+
     if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS)
     {
         blendFactor = std::max(blendFactor - 0.01, 0.0);
         ambientFactor = std::min(ambientFactor + 0.01, 0.9);
         lightPos[0] -= 1.1f;
     }
+
+    if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS)
+    {
+        cameraOnGround = true;
+        pCamera->SetCameraOnGround(cameraOnGround);
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    {
+        cameraOnGround = false;
+        pCamera->SetCameraOnGround(cameraOnGround);
+    }
+
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
@@ -909,17 +922,19 @@ void processInput(GLFWwindow* window)
         pCamera->ProcessKeyboard(FORWARD, (float)deltaTime);
     if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
         pCamera->ProcessKeyboard(BACKWARD, (float)deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_PAGE_UP) == GLFW_PRESS)
-        pCamera->ProcessKeyboard(UP, (float)deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS)
-        pCamera->ProcessKeyboard(DOWN, (float)deltaTime);
+    if (!cameraOnGround)
+    {
+        if (glfwGetKey(window, GLFW_KEY_PAGE_UP) == GLFW_PRESS)
+            pCamera->ProcessKeyboard(UP, (float)deltaTime);
+        if (glfwGetKey(window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS)
+            pCamera->ProcessKeyboard(DOWN, (float)deltaTime);
+    }
 
     if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
     {
         int width, height;
         glfwGetWindowSize(window, &width, &height);
         pCamera->Reset(width, height);
-
     }
 }
 

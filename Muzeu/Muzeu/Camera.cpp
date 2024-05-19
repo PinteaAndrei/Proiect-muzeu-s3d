@@ -22,12 +22,32 @@ void Camera::Set(const int width, const int height, const glm::vec3& position)
     this->worldUp = glm::vec3(0, 1, 0);
     this->position = position;
 
+    if (cameraOnGround)
+    {
+        this->position.y = 2.5f;
+    }
+
     lastX = width / 2.0f;
     lastY = height / 2.0f;
     bFirstMouseMove = true;
 
     UpdateCameraVectors();
 }
+
+void Camera::SetCameraOnGround(bool onGround)
+{
+    cameraOnGround = onGround;
+    if (cameraOnGround)
+    {
+        position.y = 2.5f;
+    }
+}
+
+bool Camera::IsCameraOnGround() const
+{
+    return cameraOnGround;
+}
+
 
 void Camera::Reset(const int width, const int height)
 {
@@ -83,7 +103,7 @@ const glm::mat4 Camera::GetProjectionMatrix() const
 
 void Camera::ProcessKeyboard(ECameraMovementType direction, float deltaTime)
 {
-    float velocity = (float)(cameraSpeedFactor * deltaTime)*3;
+    float velocity = (float)(cameraSpeedFactor * deltaTime) * 3;
     switch (direction)
     {
     case ECameraMovementType::FORWARD:
@@ -99,13 +119,21 @@ void Camera::ProcessKeyboard(ECameraMovementType direction, float deltaTime)
         position += right * velocity;
         break;
     case ECameraMovementType::UP:
-        position += up * velocity;
+        if (!cameraOnGround)
+            position += up * velocity;
         break;
     case ECameraMovementType::DOWN:
-        position -= up * velocity;
+        if (!cameraOnGround)
+            position -= up * velocity;
         break;
     }
+
+    if (cameraOnGround)
+    {
+        position.y = 2.5f;
+    }
 }
+
 
 void Camera::MouseControl(float xPos, float yPos)
 {
