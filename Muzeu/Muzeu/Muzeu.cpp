@@ -889,6 +889,8 @@ void processInput(GLFWwindow* window)
         blendFactor = std::min(blendFactor + 0.01, 1.0);
         ambientFactor = std::max(ambientFactor - 0.01, 0.34);
         lightPos[0] += 1.1f;
+        if (lightPos[0] > 40.0f)
+            lightPos[1] = -2.0f;
     }
 
     if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS)
@@ -896,6 +898,8 @@ void processInput(GLFWwindow* window)
         blendFactor = std::max(blendFactor - 0.01, 0.0);
         ambientFactor = std::min(ambientFactor + 0.01, 0.9);
         lightPos[0] -= 1.1f;
+        if (lightPos[0] < 40.0f)
+            lightPos[1] = 10.0f;
     }
 
     if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS)
